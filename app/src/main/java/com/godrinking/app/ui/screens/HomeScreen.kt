@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.godrinking.app.ui.theme.*
@@ -143,7 +144,7 @@ private fun EmptyWidgetsMessage() {
         Spacer(Modifier.height(12.dp))
         Text("Nenhum widget ativo", color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
         Text(
-            "Toque no botão + para personalizar",
+            "Toque no botão de personalização para ajustar",
             color    = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
@@ -487,5 +488,23 @@ private fun QuickActionCard(
             Spacer(Modifier.width(10.dp))
             Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    GoDrinkingTheme {
+        HomeScreen(
+            userName = "Ricardo",
+            activeWidgets = listOf(
+                "metrics",
+                "calendar",
+                "upcoming_events",
+                "stock_alerts",
+                "financial_summary",
+                "quick_actions"
+            )
+        )
     }
 }

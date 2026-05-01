@@ -17,6 +17,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.godrinking.app.data.UserRole
@@ -91,7 +93,7 @@ fun ProfileScreen(
                     colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     elevation = CardDefaults.cardElevation(0.dp)
                 ) {
-                    Column(modifier = Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Box {
                             Box(
                                 modifier         = Modifier.size(88.dp).clip(CircleShape).background(avatarColor),
@@ -131,7 +133,7 @@ fun ProfileScreen(
                         }
 
                         Spacer(Modifier.height(12.dp))
-                        Text(name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Text(name, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 4.dp)) {
                             Icon(Icons.Default.Shield, null, modifier = Modifier.size(14.dp), tint = PrimaryRed)
                             Spacer(Modifier.width(4.dp))
@@ -278,5 +280,17 @@ private fun ProfileInfoRow(
                 Text(value, fontSize = 14.sp)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileScreenPreview() {
+    GoDrinkingTheme {
+        ProfileScreen(
+            userName = "Carlos Eduardo",
+            userRole = UserRole.GERENTE,
+            onBack = {}
+        )
     }
 }

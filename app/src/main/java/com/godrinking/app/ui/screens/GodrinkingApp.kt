@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
@@ -21,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.godrinking.app.data.UserRole
 import com.godrinking.app.navigation.Screen
 import com.godrinking.app.ui.components.SideMenuContent
+import com.godrinking.app.ui.theme.GoDrinkingTheme
 import com.godrinking.app.ui.theme.PrimaryRed
 import kotlinx.coroutines.launch
 
@@ -73,7 +75,7 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
         Screen.Notifications.route, Screen.Events.route, Screen.Services.route,
         Screen.Profile.route,       Screen.Settings.route,
         Screen.ClientDetail.route,  Screen.ClientForm.route,
-        Screen.EventForm.route,
+        Screen.EventForm.route,     Screen.HomeCustom.route,
     )
     val isFullScreen = fullScreenRoutes.any { currentRoute.startsWith(it.substringBefore("{")) }
 
@@ -138,7 +140,7 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                 if (!isFullScreen) {
                     when (currentRoute) {
                         Screen.Home.route -> FloatingActionButton(
-                            onClick          = { /* abrir modal de personalização */ },
+                            onClick          = { navController.navigate(Screen.HomeCustom.route) },
                             containerColor   = PrimaryRed,
                             contentColor     = Color.White,
                             shape            = RoundedCornerShape(16.dp)
@@ -253,6 +255,20 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     currentRoute = Screen.EventForm.route
                     EventFormScreen(onBack = { navController.popBackStack() })
                 }
+                composable(Screen.HomeCustom.route) {
+                    currentRoute = Screen.HomeCustom.route
+                    HomeCustomScreen(
+                        activeWidgets = activeWidgets,
+                        onToggleWidget = { widgetId ->
+                            activeWidgets = if (activeWidgets.contains(widgetId)) {
+                                activeWidgets - widgetId
+                            } else {
+                                activeWidgets + widgetId
+                            }
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
             }
         }
     }
@@ -331,5 +347,37 @@ fun AppBottomBar(currentRoute: String, onTabSelected: (String) -> Unit) {
                 )
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppBottomBarPreview() {
+    GoDrinkingTheme {
+        AppBottomBar(
+            currentRoute = Screen.Home.route,
+            onTabSelected = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GodrinkingAppPreview() {
+    GoDrinkingTheme {
+        GodrinkingApp()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppTopBarPreview() {
+    GoDrinkingTheme {
+        AppTopBar(
+            currentRoute = Screen.Home.route,
+            notificationCount = 5,
+            onNotificationClick = {},
+            onMenuClick = {}
+        )
     }
 }
