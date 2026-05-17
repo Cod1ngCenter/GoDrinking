@@ -30,6 +30,7 @@ fun SideMenuContent(
     onClose: () -> Unit,
     onProfile: () -> Unit,
     onEvents: () -> Unit,
+    onQuotations: () -> Unit,
     onServices: () -> Unit,
     onSettings: () -> Unit,
     onLogout: () -> Unit,
@@ -111,9 +112,15 @@ fun SideMenuContent(
             )
             DrawerMenuItem(
                 icon        = Icons.Default.CalendarMonth,
-                label       = "Meus Eventos",
+                label       = "Eventos",
                 description = "Calendário e eventos cadastrados",
                 onClick     = { onEvents(); onClose() }
+            )
+            DrawerMenuItem(
+                icon        = Icons.Default.Calculate,
+                label       = "Orçamentos",
+                description = "Gerenciar orçamentos e propostas",
+                onClick     = { onQuotations(); onClose() }
             )
             DrawerMenuItem(
                 icon        = Icons.Default.MiscellaneousServices,

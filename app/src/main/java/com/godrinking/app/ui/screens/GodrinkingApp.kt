@@ -37,7 +37,7 @@ data class BottomNavItem(
 private val bottomNavItems = listOf(
     BottomNavItem(Screen.Home.route,    "Início",     Icons.Default.Home),
     BottomNavItem(Screen.Clients.route, "Clientes",   Icons.Default.Person),
-    BottomNavItem(Screen.Budget.route,  "Orçar",      Icons.Default.Calculate),
+    BottomNavItem(Screen.Events.route,  "Eventos",    Icons.Default.CalendarMonth),
     BottomNavItem(Screen.Reports.route, "Relatórios", Icons.Default.BarChart),
     BottomNavItem(Screen.Stock.route,   "Estoque",    Icons.Default.Inventory),
 )
@@ -72,8 +72,8 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
 
     // ── Telas que escondem TopBar / BottomBar ─────────────────────────────────
     val fullScreenRoutes = setOf(
-        Screen.Notifications.route, Screen.Events.route, Screen.Services.route,
-        Screen.Profile.route,       Screen.Settings.route,
+        Screen.Notifications.route, Screen.Quotations.route, Screen.CreateBudget.route,
+        Screen.Services.route,      Screen.Profile.route,    Screen.Settings.route,
         Screen.ClientDetail.route,  Screen.ClientForm.route,
         Screen.EventForm.route,     Screen.HomeCustom.route,
     )
@@ -93,6 +93,10 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                 onEvents = {
                     coroutineScope.launch { drawerState.close() }
                     navController.navigate(Screen.Events.route)
+                },
+                onQuotations = {
+                    coroutineScope.launch { drawerState.close() }
+                    navController.navigate(Screen.Quotations.route)
                 },
                 onServices = {
                     coroutineScope.launch { drawerState.close() }
@@ -186,9 +190,12 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                         navController.navigate(Screen.ClientDetail.createRoute(id))
                     })
                 }
-                composable(Screen.Budget.route) {
-                    currentRoute = Screen.Budget.route
-                    BudgetScreen()
+                composable(Screen.Events.route) {
+                    currentRoute = Screen.Events.route
+                    EventsScreen(
+                        onBack      = { navController.popBackStack() },
+                        onNewEvent  = { navController.navigate(Screen.EventForm.route) }
+                    )
                 }
                 composable(Screen.Reports.route) {
                     currentRoute = Screen.Reports.route
@@ -204,12 +211,16 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     currentRoute = Screen.Notifications.route
                     NotificationsScreen(onBack = { navController.popBackStack() })
                 }
-                composable(Screen.Events.route) {
-                    currentRoute = Screen.Events.route
-                    EventsScreen(
-                        onBack      = { navController.popBackStack() },
-                        onNewEvent  = { navController.navigate(Screen.EventForm.route) }
+                composable(Screen.Quotations.route) {
+                    currentRoute = Screen.Quotations.route
+                    QuotationsScreen(
+                        onBack = { navController.popBackStack() },
+                        onNewQuotation = { navController.navigate(Screen.CreateBudget.route) }
                     )
+                }
+                composable(Screen.CreateBudget.route) {
+                    currentRoute = Screen.CreateBudget.route
+                    CreateBudgetScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Screen.Services.route) {
                     currentRoute = Screen.Services.route
@@ -287,7 +298,7 @@ fun AppTopBar(
     val title = when (currentRoute) {
         Screen.Home.route    -> "Go Drinking!"
         Screen.Clients.route -> "Clientes"
-        Screen.Budget.route  -> "Orçamentos"
+        Screen.Events.route  -> "Eventos"
         Screen.Reports.route -> "Relatórios"
         Screen.Stock.route   -> "Estoque"
         else                 -> "Go Drinking!"

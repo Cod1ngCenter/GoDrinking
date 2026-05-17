@@ -8,14 +8,15 @@ sealed class Screen(val route: String) {
 
     // ── Bottom Nav ────────────────────────────────────────────────────────────
     object Home    : Screen("home")
-    object Clients : Screen("clients")
-    object Budget  : Screen("budget")
-    object Reports : Screen("reports")
-    object Stock   : Screen("stock")
+    object Clients    : Screen("clients")
+    object Events     : Screen("events")
+    object Reports    : Screen("reports")
+    object Stock      : Screen("stock")
 
     // ── Full-screen overlays ──────────────────────────────────────────────────
     object Notifications : Screen("notifications")
-    object Events        : Screen("events")
+    object Quotations    : Screen("quotations")
+    object CreateBudget  : Screen("create_budget")
     object Services      : Screen("services")
 
     object Profile : Screen("profile/{userName}/{userRole}") {

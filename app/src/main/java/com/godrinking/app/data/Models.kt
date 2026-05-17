@@ -68,7 +68,19 @@ data class Event(
     val packageType: PackageType,
     val services: List<String>,
     val observations: String,
-    val finalValue: Double
+    val finalValue: Double,
+    val status: String = "Confirmado"
+)
+
+data class Quotation(
+    val id: Int,
+    val name: String,
+    val client: String,
+    val date: Date,
+    val people: Int,
+    val packageType: PackageType,
+    val value: Double,
+    val status: String // "Pendente", "Aprovado", "Expirado"
 )
 
 data class StockItem(
@@ -176,6 +188,13 @@ object SampleData {
         Notification(3, "budget", "Orçamento Pendente",   "Proposta para João Santos aguardando resposta",          "1 dia atrás",  true),
         Notification(4, "client", "Novo Cliente",         "Ana Costa foi cadastrada no sistema",                    "2 dias atrás", true),
         Notification(5, "stock",  "Estoque em Atenção",   "Vodka Smirnoff com apenas 12 unidades",                  "2 dias atrás", true),
+    )
+
+    val quotations = listOf(
+        Quotation(1, "Orçamento Casamento Maria", "Maria Silva", date(2026, 4, 5), 200, PackageType.ABSOLUT, 8500.0, "Aprovado"),
+        Quotation(2, "Aniversário 15 anos Júlia", "Carlos Souza", date(2026, 5, 20), 120, PackageType.SMIRNOFF, 4200.0, "Pendente"),
+        Quotation(3, "Evento Corporativo Tech", "Tech Solutions", date(2026, 4, 25), 300, PackageType.ABSOLUT, 12500.0, "Pendente"),
+        Quotation(4, "Churrasco Amigos", "Felipe Rocha", date(2026, 3, 10), 50, PackageType.ORLOFF, 1800.0, "Expirado"),
     )
 
     val extraServices = listOf(
