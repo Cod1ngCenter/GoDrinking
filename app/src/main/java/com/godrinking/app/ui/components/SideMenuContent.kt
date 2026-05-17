@@ -111,12 +111,6 @@ fun SideMenuContent(
                 onClick     = { onProfile(); onClose() }
             )
             DrawerMenuItem(
-                icon        = Icons.Default.CalendarMonth,
-                label       = "Eventos",
-                description = "Calendário e eventos cadastrados",
-                onClick     = { onEvents(); onClose() }
-            )
-            DrawerMenuItem(
                 icon        = Icons.Default.Calculate,
                 label       = "Orçamentos",
                 description = "Gerenciar orçamentos e propostas",

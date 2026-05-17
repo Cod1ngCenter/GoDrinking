@@ -68,28 +68,11 @@ fun EventsScreen(onBack: () -> Unit, onNewEvent: () -> Unit = {}) {
         EventDetailDialog(event = detailEvent!!, onClose = { detailEvent = null })
     }
 
-    Scaffold(
-        topBar = {
-            ScreenTopBar(title = "Meus Eventos", onBack = onBack, actions = {
-                Button(
-                    onClick  = onNewEvent,
-                    modifier = Modifier.padding(end = 8.dp),
-                    shape    = RoundedCornerShape(8.dp),
-                    colors   = ButtonDefaults.buttonColors(containerColor = PrimaryRed),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Icon(Icons.Default.Add, null, modifier = Modifier.size(14.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("Novo", fontSize = 13.sp)
-                }
-            })
-        }
-    ) { padding ->
-        LazyColumn(
-            modifier        = Modifier.fillMaxSize().padding(padding),
-            contentPadding  = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
+    LazyColumn(
+        modifier        = Modifier.fillMaxSize(),
+        contentPadding  = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
             // ── Stats ──────────────────────────────────────────────────────
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -181,10 +164,14 @@ fun EventsScreen(onBack: () -> Unit, onNewEvent: () -> Unit = {}) {
                     Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                         elevation = CardDefaults.cardElevation(0.dp)) {
-                        Column(modifier = Modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
                             Icon(Icons.Default.CalendarToday, null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.3f))
                             Spacer(Modifier.height(8.dp))
-                            Text("Nenhum evento neste mês", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp)
+                            Text("Nenhum evento neste mês", color = MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 14.sp, textAlign = TextAlign.Center)
                             Spacer(Modifier.height(12.dp))
                             Button(onClick = onNewEvent, colors = ButtonDefaults.buttonColors(containerColor = PrimaryRed), shape = RoundedCornerShape(8.dp)) {
                                 Text("Cadastrar evento", fontSize = 13.sp)
@@ -198,7 +185,6 @@ fun EventsScreen(onBack: () -> Unit, onNewEvent: () -> Unit = {}) {
                 }
             }
         }
-    }
 }
 
 @Composable

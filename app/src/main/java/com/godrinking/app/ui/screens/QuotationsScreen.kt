@@ -34,19 +34,17 @@ fun QuotationsScreen(onBack: () -> Unit, onNewQuotation: () -> Unit) {
 
     Scaffold(
         topBar = {
-            ScreenTopBar(title = "Orçamentos", onBack = onBack, actions = {
-                Button(
-                    onClick  = onNewQuotation,
-                    modifier = Modifier.padding(end = 8.dp),
-                    shape    = RoundedCornerShape(8.dp),
-                    colors   = ButtonDefaults.buttonColors(containerColor = PrimaryRed),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Icon(Icons.Default.Add, null, modifier = Modifier.size(14.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("Novo", fontSize = 13.sp)
-                }
-            })
+            ScreenTopBar(title = "Orçamentos", onBack = onBack)
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onNewQuotation,
+                containerColor = PrimaryRed,
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(Icons.Default.Add, "Novo Orçamento")
+            }
         }
     ) { padding ->
         LazyColumn(

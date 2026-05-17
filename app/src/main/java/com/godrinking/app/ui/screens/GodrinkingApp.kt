@@ -156,6 +156,13 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                             contentColor   = Color.White,
                             shape          = RoundedCornerShape(16.dp)
                         ) { Icon(Icons.Default.Add, "Novo Cliente") }
+
+                        Screen.Events.route -> FloatingActionButton(
+                            onClick        = { navController.navigate(Screen.EventForm.route) },
+                            containerColor = PrimaryRed,
+                            contentColor   = Color.White,
+                            shape          = RoundedCornerShape(16.dp)
+                        ) { Icon(Icons.Default.Add, "Novo Evento") }
                     }
                 }
             }
