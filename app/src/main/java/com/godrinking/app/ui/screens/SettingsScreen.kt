@@ -1,9 +1,12 @@
 package com.godrinking.app.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -15,9 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.godrinking.app.R
 import com.godrinking.app.ui.components.ScreenTopBar
 import com.godrinking.app.ui.theme.*
 
@@ -141,11 +147,16 @@ fun SettingsScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Box(
-                                    modifier         = Modifier.size(40.dp).clip(RoundedCornerShape(10.dp))
-                                        .background(Brush.linearGradient(listOf(PrimaryRed, PrimaryRedDarker))),
+                                    modifier         = Modifier.size(44.dp).clip(RoundedCornerShape(10.dp))
+                                        .background(Color.Black),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text("GD", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                                    Image(
+                                        painter = painterResource(id = R.drawable.app_logo),
+                                        contentDescription = "App Logo",
+                                        modifier = Modifier.fillMaxSize().padding(4.dp),
+                                        contentScale = ContentScale.Fit
+                                    )
                                 }
                                 Spacer(Modifier.width(12.dp))
                                 Column {
@@ -197,37 +208,61 @@ private fun ThemeOptionCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val backgroundColor = if (isSelected) {
+        PrimaryRed.copy(alpha = 0.1f)
+    } else {
+        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+    }
+
+    val borderColor = if (isSelected) {
+        PrimaryRed
+    } else {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+    }
+
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(10.dp))
+            .height(110.dp)
+            .clip(RoundedCornerShape(16.dp))
             .border(
-                width = 2.dp,
-                color = if (isSelected) PrimaryRed else MaterialTheme.colorScheme.outline,
-                shape = RoundedCornerShape(10.dp)
+                width = if (isSelected) 2.dp else 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(16.dp)
             )
-            .background(if (isSelected) PrimaryRed.copy(0.08f) else MaterialTheme.colorScheme.surfaceVariant)
-            .padding(16.dp)
+            .background(backgroundColor)
+            .clickable(onClick = onClick)
+            .padding(12.dp)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier            = Modifier.fillMaxWidth()
+            verticalArrangement = Arrangement.Center,
+            modifier            = Modifier.fillMaxSize()
         ) {
-            Icon(icon, null, modifier = Modifier.size(28.dp), tint = if (isSelected) PrimaryRed else MaterialTheme.colorScheme.onSurfaceVariant)
+            Icon(
+                icon, null, 
+                modifier = Modifier.size(28.dp), 
+                tint = if (isSelected) PrimaryRed else MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Spacer(Modifier.height(8.dp))
-            Text(label, fontSize = 13.sp, color = if (isSelected) PrimaryRed else MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                label, 
+                fontSize = 14.sp, 
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                color = if (isSelected) PrimaryRed else MaterialTheme.colorScheme.onSurface
+            )
+            
             if (isSelected) {
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(4.dp))
                 Box(
-                    modifier = Modifier.clip(RoundedCornerShape(20.dp)).background(PrimaryRed).padding(horizontal = 10.dp, vertical = 3.dp)
-                ) { Text("Ativo", color = Color.White, fontSize = 10.sp) }
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .background(PrimaryRed)
+                        .padding(horizontal = 10.dp, vertical = 2.dp)
+                ) {
+                    Text("Ativo", color = Color.White, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
-        // Invisible click overlay
-        Surface(
-            onClick  = onClick,
-            modifier = Modifier.matchParentSize(),
-            color    = Color.Transparent
-        ) {}
     }
 }
 

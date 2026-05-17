@@ -1,5 +1,6 @@
 package com.godrinking.app.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ fun StockScreen() {
     var items          by remember { mutableStateOf(SampleData.stockItems.toMutableList()) }
     var search         by remember { mutableStateOf("") }
     var activeCategory by remember { mutableStateOf("Todos") }
+    var activeStatus   by remember { mutableStateOf<StockStatus?>(null) }
     var showForm       by remember { mutableStateOf(false) }
     var editingItem    by remember { mutableStateOf<StockItem?>(null) }
 
@@ -37,7 +39,8 @@ fun StockScreen() {
     val filtered = items.filter { item ->
         val matchSearch = item.name.contains(search, ignoreCase = true)
         val matchCat    = activeCategory == "Todos" || item.category.label == activeCategory
-        matchSearch && matchCat
+        val matchStatus = activeStatus == null || item.status == activeStatus
+        matchSearch && matchCat && matchStatus
     }
 
     val totalItems    = items.size
@@ -68,9 +71,30 @@ fun StockScreen() {
         // ── Stats ─────────────────────────────────────────────────────────
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                StatCard("Total",   totalItems.toString(), BlueInfo,    Modifier.weight(1f))
-                StatCard("Atenção", warningItems.toString(), YellowWarning, Modifier.weight(1f))
-                StatCard("Crítico", criticalItems.toString(), RedDanger, Modifier.weight(1f))
+                StatCard(
+                    label = "Total",
+                    value = totalItems.toString(),
+                    color = BlueInfo,
+                    isSelected = activeStatus == null,
+                    onClick = { activeStatus = null },
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    label = "Atenção",
+                    value = warningItems.toString(),
+                    color = YellowWarning,
+                    isSelected = activeStatus == StockStatus.WARNING,
+                    onClick = { activeStatus = StockStatus.WARNING },
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    label = "Crítico",
+                    value = criticalItems.toString(),
+                    color = RedDanger,
+                    isSelected = activeStatus == StockStatus.CRITICAL,
+                    onClick = { activeStatus = StockStatus.CRITICAL },
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
 
@@ -137,11 +161,22 @@ fun StockScreen() {
 }
 
 @Composable
-private fun StatCard(label: String, value: String, color: Color, modifier: Modifier = Modifier) {
+private fun StatCard(
+    label: String,
+    value: String,
+    color: Color,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier  = modifier,
+        onClick   = onClick,
         shape     = RoundedCornerShape(12.dp),
-        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors    = CardDefaults.cardColors(
+            containerColor = if (isSelected) color.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface
+        ),
+        border    = if (isSelected) BorderStroke(1.5.dp, color) else null,
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
@@ -152,8 +187,8 @@ private fun StatCard(label: String, value: String, color: Color, modifier: Modif
                 Icon(Icons.Default.Inventory, null, tint = Color.White, modifier = Modifier.size(16.dp))
             }
             Spacer(Modifier.height(8.dp))
-            Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(value, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            Text(label, fontSize = 11.sp, color = if (isSelected) color else MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(value, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = if (isSelected) color else MaterialTheme.colorScheme.onSurface)
         }
     }
 }

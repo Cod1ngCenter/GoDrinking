@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "198894773478",
-    "project_id": "godrinking",
-    "storage_bucket": "godrinking.firebasestorage.app"
+    "project_number": "446371622557",
+    "project_id": "godrinking-453a3",
+    "storage_bucket": "godrinking-453a3.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:198894773478:android:680af4aa4461eed7870727",
+        "mobilesdk_app_id": "1:446371622557:android:4b57017b721b8675e96e74",
         "android_client_info": {
           "package_name": "com.godrinking.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA0VwfffkKeegbeyX1MEZGoyivXrNuNwkY"
+          "current_key": "AIzaSyDXm9besWBgDLgLqd4MMLGQUI3dPFd-5e0"
         }
       ],
       "services": {

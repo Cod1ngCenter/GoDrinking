@@ -1,7 +1,15 @@
 package com.godrinking.app.ui.screens
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlin.math.atan2
+import kotlin.math.PI
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -105,7 +113,16 @@ fun ReportsScreen() {
                         verticalAlignment = Alignment.Bottom,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        var animationPlayed by remember { mutableStateOf(false) }
+                        LaunchedEffect(Unit) { animationPlayed = true }
+
                         weeklyData.forEachIndexed { i, value ->
+                            val animatedHeightProgress by animateFloatAsState(
+                                targetValue = if (animationPlayed) value / maxVal else 0f,
+                                animationSpec = tween(durationMillis = 1000, delayMillis = i * 100),
+                                label = "BarHeightAnimation"
+                            )
+
                             Column(
                                 modifier            = Modifier.weight(1f),
                                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,7 +137,7 @@ fun ReportsScreen() {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .fillMaxHeight(value / maxVal)
+                                        .fillMaxHeight(animatedHeightProgress)
                                         .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
                                         .background(barColor)
                                 )
@@ -142,6 +159,8 @@ fun ReportsScreen() {
 
         // ── Gráfico de pizza (por tipo de evento) ─────────────────────────
         item {
+            var selectedSegment by remember { mutableStateOf<PieSegment?>(null) }
+
             Card(
                 modifier  = Modifier.fillMaxWidth(),
                 shape     = RoundedCornerShape(12.dp),
@@ -161,13 +180,68 @@ fun ReportsScreen() {
                             modifier         = Modifier.size(140.dp),
                             contentAlignment = Alignment.Center
                         ) {
+                            var animationPlayed by remember { mutableStateOf(false) }
+                            LaunchedEffect(Unit) { animationPlayed = true }
+                            val sweepProgress by animateFloatAsState(
+                                targetValue = if (animationPlayed) 1f else 0f,
+                                animationSpec = tween(durationMillis = 1200),
+                                label = "DonutChartAnimation"
+                            )
+
                             val segments = pieData
-                            Canvas(modifier = Modifier.fillMaxSize()) {
-                                drawDonutChart(segments.map { Pair(it.value.toFloat(), it.color) })
+                            Canvas(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .pointerInput(Unit) {
+                                        detectTapGestures { offset ->
+                                            val center = Offset(size.width / 2f, size.height / 2f)
+                                            val x = offset.x - center.x
+                                            val y = offset.y - center.y
+                                            var angle = atan2(y, x) * (180f / PI.toFloat())
+                                            if (angle < 0) angle += 360f
+
+                                            // Corrigir para o ponto de partida do gráfico (-90 graus)
+                                            val adjustedAngle = (angle + 90f) % 360f
+                                            
+                                            var currentAngle = 0f
+                                            val totalVal = pieData.sumOf { it.value }
+                                            
+                                            val clicked = pieData.find { seg ->
+                                                val sweep = (seg.value.toFloat() / totalVal) * 360f
+                                                val start = currentAngle
+                                                val end = currentAngle + sweep
+                                                currentAngle += sweep
+                                                adjustedAngle in start..end
+                                            }
+                                            
+                                            selectedSegment = if (selectedSegment == clicked) null else clicked
+                                        }
+                                    }
+                            ) {
+                                drawDonutChart(
+                                    segments = segments.map { Pair(it.value.toFloat(), it.color) },
+                                    progress = sweepProgress,
+                                    selectedIndex = segments.indexOf(selectedSegment)
+                                )
                             }
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Total", fontSize = 10.sp, color = Color.Gray)
-                                Text("R${total / 1000}k", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                            
+                            // Texto central animado
+                            AnimatedContent(
+                                targetState = selectedSegment,
+                                transitionSpec = {
+                                    fadeIn(tween(300)) togetherWith fadeOut(tween(300))
+                                },
+                                label = "CenterTextAnimation"
+                            ) { targetSegment ->
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    if (targetSegment == null) {
+                                        Text("Total", fontSize = 10.sp, color = Color.Gray)
+                                        Text("R$${total / 1000}k", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                    } else {
+                                        Text(targetSegment.name, fontSize = 10.sp, color = targetSegment.color, fontWeight = FontWeight.Medium)
+                                        Text("R$${targetSegment.value / 1000}k", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                }
                             }
                         }
 
@@ -176,17 +250,34 @@ fun ReportsScreen() {
                         // Legenda
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             pieData.forEach { seg ->
-                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                val isSelected = selectedSegment == seg
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (isSelected) seg.color.copy(alpha = 0.1f) else Color.Transparent)
+                                        .clickable { 
+                                            selectedSegment = if (isSelected) null else seg
+                                        }
+                                        .padding(4.dp)
+                                ) {
                                     Box(
-                                        modifier = Modifier.size(10.dp).clip(CircleShape).background(seg.color)
+                                        modifier = Modifier
+                                            .size(if (isSelected) 12.dp else 10.dp)
+                                            .clip(CircleShape)
+                                            .background(seg.color)
                                     )
                                     Spacer(Modifier.width(8.dp))
                                     Column {
-                                        Text(seg.name, fontSize = 12.sp)
+                                        Text(
+                                            seg.name, 
+                                            fontSize = 12.sp,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                        )
                                         Text(
                                             "R$ ${seg.value / 1000}k · ${(seg.value * 100 / total)}%",
                                             fontSize = 10.sp,
-                                            color    = MaterialTheme.colorScheme.onSurfaceVariant
+                                            color    = if (isSelected) seg.color else MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                 }
@@ -217,25 +308,35 @@ fun ReportsScreen() {
 
 // ── Donut chart com Canvas ────────────────────────────────────────────────────
 
-private fun DrawScope.drawDonutChart(segments: List<Pair<Float, Color>>) {
+private fun DrawScope.drawDonutChart(
+    segments: List<Pair<Float, Color>>, 
+    progress: Float,
+    selectedIndex: Int = -1
+) {
     val total     = segments.sumOf { it.first.toDouble() }.toFloat()
     val stroke    = size.minDimension * 0.22f
     val radius    = (size.minDimension - stroke) / 2f
     val center    = Offset(size.width / 2f, size.height / 2f)
 
     var startAngle = -90f
-    segments.forEach { (value, color) ->
-        val sweep = (value / total) * 360f
-        drawArc(
-            color       = color,
-            startAngle  = startAngle,
-            sweepAngle  = sweep - 2f,
-            useCenter   = false,
-            topLeft     = Offset(center.x - radius, center.y - radius),
-            size        = Size(radius * 2f, radius * 2f),
-            style       = androidx.compose.ui.graphics.drawscope.Stroke(width = stroke)
-        )
-        startAngle += sweep
+    segments.forEachIndexed { index, (value, color) ->
+        val sweep = (value / total) * 360f * progress
+        val isSelected = index == selectedIndex
+        
+        if (sweep > 0.1f) {
+            drawArc(
+                color       = if (selectedIndex == -1 || isSelected) color else color.copy(alpha = 0.2f),
+                startAngle  = startAngle,
+                sweepAngle  = sweep - 1f,
+                useCenter   = false,
+                topLeft     = Offset(center.x - radius, center.y - radius),
+                size        = Size(radius * 2f, radius * 2f),
+                style       = androidx.compose.ui.graphics.drawscope.Stroke(
+                    width = if (isSelected) stroke * 1.2f else stroke
+                )
+            )
+        }
+        startAngle += (value / total) * 360f
     }
 }
 

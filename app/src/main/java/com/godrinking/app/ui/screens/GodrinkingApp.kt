@@ -243,15 +243,13 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                         onBack   = { navController.popBackStack() }
                     )
                 }
-                composable(Screen.Settings.route) { backStack ->
+                composable(Screen.Settings.route) {
                     currentRoute = Screen.Settings.route
-                    val theme = backStack.arguments?.getString("theme") ?: currentTheme
                     SettingsScreen(
-                        currentTheme  = theme,
+                        currentTheme  = currentTheme,
                         onThemeChange = { newTheme ->
                             currentTheme = newTheme
                             onThemeChange(newTheme)
-                            navController.popBackStack()
                         },
                         onBack = { navController.popBackStack() }
                     )
