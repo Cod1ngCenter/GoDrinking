@@ -51,7 +51,6 @@ fun ReportsScreen() {
         PieSegment("Outros",      12000, Color(0xFFFCA5A5)),
     )
     val total = pieData.sumOf { it.value }
-
     LazyColumn(
         modifier        = Modifier.fillMaxSize(),
         contentPadding  = PaddingValues(16.dp),
@@ -202,10 +201,10 @@ fun ReportsScreen() {
 
                                             // Corrigir para o ponto de partida do gráfico (-90 graus)
                                             val adjustedAngle = (angle + 90f) % 360f
-                                            
+
                                             var currentAngle = 0f
                                             val totalVal = pieData.sumOf { it.value }
-                                            
+
                                             val clicked = pieData.find { seg ->
                                                 val sweep = (seg.value.toFloat() / totalVal) * 360f
                                                 val start = currentAngle
@@ -213,7 +212,7 @@ fun ReportsScreen() {
                                                 currentAngle += sweep
                                                 adjustedAngle in start..end
                                             }
-                                            
+
                                             selectedSegment = if (selectedSegment == clicked) null else clicked
                                         }
                                     }
@@ -224,7 +223,7 @@ fun ReportsScreen() {
                                     selectedIndex = segments.indexOf(selectedSegment)
                                 )
                             }
-                            
+
                             // Texto central animado
                             AnimatedContent(
                                 targetState = selectedSegment,
@@ -256,7 +255,7 @@ fun ReportsScreen() {
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(8.dp))
                                         .background(if (isSelected) seg.color.copy(alpha = 0.1f) else Color.Transparent)
-                                        .clickable { 
+                                        .clickable {
                                             selectedSegment = if (isSelected) null else seg
                                         }
                                         .padding(4.dp)
@@ -270,7 +269,7 @@ fun ReportsScreen() {
                                     Spacer(Modifier.width(8.dp))
                                     Column {
                                         Text(
-                                            seg.name, 
+                                            seg.name,
                                             fontSize = 12.sp,
                                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                                         )

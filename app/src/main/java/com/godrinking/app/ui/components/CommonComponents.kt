@@ -35,6 +35,7 @@ fun ScreenTopBar(
             }
         },
         actions            = actions,
+        windowInsets       = WindowInsets(0, 0, 0, 0),
         colors             = TopAppBarDefaults.topAppBarColors(
             containerColor     = MaterialTheme.colorScheme.surface,
             titleContentColor  = MaterialTheme.colorScheme.onSurface,

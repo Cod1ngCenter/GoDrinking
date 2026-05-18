@@ -367,6 +367,15 @@ private fun EventDetailDialog(event: Event, onClose: () -> Unit) {
                             }
                         }
                     }
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        InfoItem("Pessoas", "${event.people}", Modifier.weight(1f))
+                        Box(modifier = Modifier.weight(1f).clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceVariant).padding(10.dp)) {
+                            Column {
+                                Text("Pacote", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(event.packageType.label.replace("Pacote ", ""), fontSize = 13.sp, color = pkgColor, fontWeight = FontWeight.Medium)
+                            }
+                        }
+                    }
                     InfoItem("Local", event.location)
                     if (event.services.isNotEmpty()) {
                         Column(modifier = Modifier.clip(RoundedCornerShape(8.dp)).background(MaterialTheme.colorScheme.surfaceVariant).padding(10.dp)) {

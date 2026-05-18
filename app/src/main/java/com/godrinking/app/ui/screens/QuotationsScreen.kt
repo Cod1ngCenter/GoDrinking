@@ -41,7 +41,7 @@ fun QuotationsScreen(onBack: () -> Unit, onNewQuotation: () -> Unit) {
                 onClick = onNewQuotation,
                 containerColor = PrimaryRed,
                 contentColor = Color.White,
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(360.dp)
             ) {
                 Icon(Icons.Default.Add, "Novo Orçamento")
             }

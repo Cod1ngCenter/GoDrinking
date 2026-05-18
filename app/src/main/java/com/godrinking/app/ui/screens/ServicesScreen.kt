@@ -61,19 +61,17 @@ fun ServicesScreen(onBack: () -> Unit) {
 
     Scaffold(
         topBar = {
-            ScreenTopBar(title = "Serviços", onBack = onBack, actions = {
-                Button(
-                    onClick  = { editingService = null; showForm = true },
-                    modifier = Modifier.padding(end = 8.dp),
-                    shape    = RoundedCornerShape(8.dp),
-                    colors   = ButtonDefaults.buttonColors(containerColor = PrimaryRed),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Icon(Icons.Default.Add, null, modifier = Modifier.size(14.dp))
-                    Spacer(Modifier.width(4.dp))
-                    Text("Novo", fontSize = 13.sp)
-                }
-            })
+            ScreenTopBar(title = "Serviços", onBack = onBack)
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick          = { editingService = null; showForm = true },
+                containerColor   = PrimaryRed,
+                contentColor     = Color.White,
+                shape            = RoundedCornerShape(360.dp)
+            ) {
+                Icon(Icons.Default.Add, "Novo Serviço")
+            }
         }
     ) { padding ->
         LazyColumn(

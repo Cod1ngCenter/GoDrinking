@@ -42,7 +42,6 @@ fun StockScreen() {
         val matchStatus = activeStatus == null || item.status == activeStatus
         matchSearch && matchCat && matchStatus
     }
-
     val totalItems    = items.size
     val criticalItems = items.count { it.status == StockStatus.CRITICAL }
     val warningItems  = items.count { it.status == StockStatus.WARNING }
@@ -116,11 +115,6 @@ fun StockScreen() {
                         unfocusedContainerColor  = MaterialTheme.colorScheme.surface,
                     )
                 )
-                FilledIconButton(
-                    onClick  = { editingItem = null; showForm = true },
-                    modifier = Modifier.size(52.dp),
-                    colors   = IconButtonDefaults.filledIconButtonColors(containerColor = PrimaryRed)
-                ) { Icon(Icons.Default.Add, null, tint = Color.White) }
             }
         }
 

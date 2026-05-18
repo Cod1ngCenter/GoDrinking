@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -76,6 +77,7 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
         Screen.Services.route,      Screen.Profile.route,    Screen.Settings.route,
         Screen.ClientDetail.route,  Screen.ClientForm.route,
         Screen.EventForm.route,     Screen.HomeCustom.route,
+        Screen.StockForm.route,
     )
     val isFullScreen = fullScreenRoutes.any { currentRoute.startsWith(it.substringBefore("{")) }
 
@@ -147,25 +149,33 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                             onClick          = { navController.navigate(Screen.HomeCustom.route) },
                             containerColor   = PrimaryRed,
                             contentColor     = Color.White,
-                            shape            = RoundedCornerShape(16.dp)
+                            shape            = RoundedCornerShape(360.dp)
                         ) { Icon(Icons.Default.Tune, "Personalizar") }
 
                         Screen.Clients.route -> FloatingActionButton(
                             onClick        = { navController.navigate(Screen.ClientForm.route) },
                             containerColor = PrimaryRed,
                             contentColor   = Color.White,
-                            shape          = RoundedCornerShape(16.dp)
+                            shape          = RoundedCornerShape(360.dp)
                         ) { Icon(Icons.Default.Add, "Novo Cliente") }
 
                         Screen.Events.route -> FloatingActionButton(
                             onClick        = { navController.navigate(Screen.EventForm.route) },
                             containerColor = PrimaryRed,
                             contentColor   = Color.White,
-                            shape          = RoundedCornerShape(16.dp)
+                            shape          = RoundedCornerShape(360.dp)
                         ) { Icon(Icons.Default.Add, "Novo Evento") }
+
+                        Screen.Stock.route -> FloatingActionButton(
+                            onClick        = { navController.navigate(Screen.StockForm.route) },
+                            containerColor = PrimaryRed,
+                            contentColor   = Color.White,
+                            shape          = RoundedCornerShape(360.dp)
+                        ) { Icon(Icons.Default.Add, "Novo Item") }
                     }
                 }
             }
+
         ) { innerPadding ->
             NavHost(
                 navController    = navController,
@@ -285,6 +295,10 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                         onBack = { navController.popBackStack() }
                     )
                 }
+                composable(Screen.StockForm.route) {
+                    currentRoute = Screen.StockForm.route
+                    StockFormScreen(onBack = { navController.popBackStack() })
+                }
             }
         }
     }
@@ -331,6 +345,7 @@ fun AppTopBar(
                 }
             }
         },
+        windowInsets = TopAppBarDefaults.windowInsets,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor         = MaterialTheme.colorScheme.surface,
             titleContentColor      = MaterialTheme.colorScheme.onSurface,
@@ -341,6 +356,7 @@ fun AppTopBar(
 }
 
 // ── Bottom Navigation Bar ─────────────────────────────────────────────────────
+
 
 @Composable
 fun AppBottomBar(currentRoute: String, onTabSelected: (String) -> Unit) {

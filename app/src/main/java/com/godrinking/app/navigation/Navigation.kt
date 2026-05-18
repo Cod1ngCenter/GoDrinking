@@ -35,4 +35,5 @@ sealed class Screen(val route: String) {
     object ClientForm : Screen("client_form")
     object EventForm  : Screen("event_form")
     object HomeCustom : Screen("home_custom")
+    object StockForm : Screen("stock_form")
 }

@@ -42,6 +42,17 @@ fun LoginScreen(onLogin: (UserRole) -> Unit) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
+    LoginScreenContent(
+        visible = visible,
+        onLogin = onLogin
+    )
+}
+
+@Composable
+private fun LoginScreenContent(
+    visible: Boolean,
+    onLogin: (UserRole) -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
@@ -61,23 +72,7 @@ fun LoginScreen(onLogin: (UserRole) -> Unit) {
                 )
             )
     ) {
-        // Elementos decorativos de fundo ESTATICOS (Otimizado para performance)
-        Box(
-            modifier = Modifier
-                .offset(x = (-50).dp, y = (-20).dp)
-                .size(250.dp)
-                .alpha(0.07f)
-                .background(Brush.radialGradient(listOf(PrimaryRed, Color.Transparent)), CircleShape)
-        )
-        
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .offset(x = 60.dp, y = 40.dp)
-                .size(300.dp)
-                .alpha(0.05f)
-                .background(Brush.radialGradient(listOf(PrimaryRed, Color.Transparent)), CircleShape)
-        )
+
 
         Column(
             modifier = Modifier
@@ -86,7 +81,7 @@ fun LoginScreen(onLogin: (UserRole) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // ── Logo com Animação ──────────────────────────────────────────
+            // ── Logo ──────────────────────────────────────────
             AnimatedVisibility(
                 visible = visible,
                 enter = fadeIn(tween(1000)) + expandVertically(tween(800))
@@ -95,7 +90,7 @@ fun LoginScreen(onLogin: (UserRole) -> Unit) {
                     Box(
                         modifier = Modifier
                             .size(100.dp)
-                            .clip(RoundedCornerShape(24.dp)),
+                            .clip(RoundedCornerShape(100.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Image(
