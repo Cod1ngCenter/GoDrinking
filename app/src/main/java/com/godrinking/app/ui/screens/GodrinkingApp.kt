@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.godrinking.app.data.UserRole
 import com.godrinking.app.navigation.Screen
@@ -56,7 +57,10 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
     var userRole      by remember { mutableStateOf(UserRole.DEV) }
     var userName      by remember { mutableStateOf("Ana") }
     var currentTheme  by remember { mutableStateOf("dark") }
-    var currentRoute  by remember { mutableStateOf(Screen.Home.route) }
+    
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: Screen.Home.route
+
     var activeWidgets by remember {
         mutableStateOf(listOf("metrics", "calendar", "upcoming_events"))
     }
@@ -111,7 +115,9 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                 onLogout = {
                     coroutineScope.launch { drawerState.close() }
                     isLoggedIn = false
-                    currentRoute = Screen.Home.route
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             )
         }
@@ -132,7 +138,6 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     AppBottomBar(
                         currentRoute   = currentRoute,
                         onTabSelected  = { route ->
-                            currentRoute = route
                             navController.navigate(route) {
                                 popUpTo(Screen.Home.route) { saveState = true }
                                 launchSingleTop = true
@@ -184,67 +189,57 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
             ) {
                 // ── Bottom Nav ─────────────────────────────────────────────
                 composable(Screen.Home.route) {
-                    currentRoute = Screen.Home.route
                     HomeScreen(
                         userName      = userName,
                         activeWidgets = activeWidgets,
-                        onNavigate    = { tab ->
-                            if (tab == "events") {
-                                navController.navigate(Screen.Events.route)
-                            } else {
-                                currentRoute = tab
-                                navController.navigate(tab) {
-                                    popUpTo(Screen.Home.route)
+                        onNavigate    = { route ->
+                            if (route == Screen.Events.route || route == Screen.Stock.route || route == Screen.Reports.route || route == Screen.Clients.route) {
+                                navController.navigate(route) {
+                                    popUpTo(Screen.Home.route) { saveState = true }
                                     launchSingleTop = true
+                                    restoreState = true
                                 }
+                            } else {
+                                navController.navigate(route)
                             }
                         }
                     )
                 }
                 composable(Screen.Clients.route) {
-                    currentRoute = Screen.Clients.route
                     ClientsScreen(onViewDetails = { id ->
                         navController.navigate(Screen.ClientDetail.createRoute(id))
                     })
                 }
                 composable(Screen.Events.route) {
-                    currentRoute = Screen.Events.route
                     EventsScreen(
                         onBack      = { navController.popBackStack() },
                         onNewEvent  = { navController.navigate(Screen.EventForm.route) }
                     )
                 }
                 composable(Screen.Reports.route) {
-                    currentRoute = Screen.Reports.route
                     ReportsScreen()
                 }
                 composable(Screen.Stock.route) {
-                    currentRoute = Screen.Stock.route
                     StockScreen()
                 }
 
                 // ── Full-screen overlays ───────────────────────────────────
                 composable(Screen.Notifications.route) {
-                    currentRoute = Screen.Notifications.route
                     NotificationsScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Screen.Quotations.route) {
-                    currentRoute = Screen.Quotations.route
                     QuotationsScreen(
                         onBack = { navController.popBackStack() },
                         onNewQuotation = { navController.navigate(Screen.CreateBudget.route) }
                     )
                 }
                 composable(Screen.CreateBudget.route) {
-                    currentRoute = Screen.CreateBudget.route
                     CreateBudgetScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Screen.Services.route) {
-                    currentRoute = Screen.Services.route
                     ServicesScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Screen.Profile.route) { backStack ->
-                    currentRoute = Screen.Profile.route
                     val uName = backStack.arguments?.getString("userName") ?: userName
                     val uRole = backStack.arguments?.getString("userRole") ?: userRole.name
                     ProfileScreen(
@@ -254,7 +249,6 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     )
                 }
                 composable(Screen.Settings.route) {
-                    currentRoute = Screen.Settings.route
                     SettingsScreen(
                         currentTheme  = currentTheme,
                         onThemeChange = { newTheme ->
@@ -265,7 +259,6 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     )
                 }
                 composable(Screen.ClientDetail.route) { backStack ->
-                    currentRoute = Screen.ClientDetail.route
                     val clientId = backStack.arguments?.getString("clientId")?.toIntOrNull() ?: 1
                     ClientDetailScreen(
                         clientId  = clientId,
@@ -274,15 +267,12 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     )
                 }
                 composable(Screen.ClientForm.route) {
-                    currentRoute = Screen.ClientForm.route
                     ClientFormScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Screen.EventForm.route) {
-                    currentRoute = Screen.EventForm.route
                     EventFormScreen(onBack = { navController.popBackStack() })
                 }
                 composable(Screen.HomeCustom.route) {
-                    currentRoute = Screen.HomeCustom.route
                     HomeCustomScreen(
                         activeWidgets = activeWidgets,
                         onToggleWidget = { widgetId ->
@@ -296,7 +286,6 @@ fun GodrinkingApp(onThemeChange: (String) -> Unit = {}) {
                     )
                 }
                 composable(Screen.StockForm.route) {
-                    currentRoute = Screen.StockForm.route
                     StockFormScreen(onBack = { navController.popBackStack() })
                 }
             }

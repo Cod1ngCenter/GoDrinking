@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.godrinking.app.ui.components.ScreenTopBar
 import com.godrinking.app.ui.theme.*
 
 // ── Dados dos pacotes ─────────────────────────────────────────────────────────
@@ -80,18 +81,10 @@ fun CreateBudgetScreen(onBack: () -> Unit = {}) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Novo Orçamento", fontWeight = FontWeight.SemiBold, fontSize = 18.sp) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Voltar")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface
-                )
+            ScreenTopBar(
+                title = "Novo Orçamento",
+                onBack = onBack,
+                navigationIcon = Icons.Default.ArrowBack
             )
         }
     ) { padding ->

@@ -25,13 +25,14 @@ import com.godrinking.app.ui.theme.*
 fun ScreenTopBar(
     title: String,
     onBack: () -> Unit,
+    navigationIcon: androidx.compose.ui.graphics.vector.ImageVector = Icons.Default.Close,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
         title              = { Text(title, fontWeight = FontWeight.SemiBold) },
         navigationIcon     = {
             IconButton(onClick = onBack) {
-                Icon(Icons.Default.Close, contentDescription = "Fechar")
+                Icon(navigationIcon, contentDescription = "Voltar")
             }
         },
         actions            = actions,

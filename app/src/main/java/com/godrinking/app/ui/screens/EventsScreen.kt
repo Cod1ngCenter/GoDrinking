@@ -228,7 +228,10 @@ private fun MiniMonthCard(
                     repeat(7) {
                         val day = d++
                         Box(
-                            modifier         = Modifier.weight(1f).aspectRatio(1f)
+                            modifier         = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .padding(0.5.dp)
                                 .clip(RoundedCornerShape(2.dp))
                                 .background(
                                     when {
@@ -240,7 +243,13 @@ private fun MiniMonthCard(
                             contentAlignment = Alignment.Center
                         ) {
                             if (day in 1..daysInMonth) {
-                                Text(day.toString(), fontSize = 5.sp, color = if (eventDays.contains(day)) Color.White else MaterialTheme.colorScheme.onSurface.copy(0.7f))
+                                Text(
+                                    day.toString(),
+                                    fontSize = 7.sp,
+                                    color = if (eventDays.contains(day)) Color.White else MaterialTheme.colorScheme.onSurface.copy(0.7f),
+                                    textAlign = TextAlign.Center,
+                                    lineHeight = 7.sp
+                                )
                             }
                         }
                     }

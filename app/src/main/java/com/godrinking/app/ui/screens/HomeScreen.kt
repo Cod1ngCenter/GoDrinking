@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.godrinking.app.navigation.Screen
 import com.godrinking.app.ui.theme.*
 import java.util.Calendar
 
@@ -241,7 +242,8 @@ private fun CalendarWidget(modifier: Modifier = Modifier) {
                                 modifier         = Modifier
                                     .weight(1f)
                                     .aspectRatio(1f)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .padding(2.dp)
+                                    .clip(RoundedCornerShape(6.dp))
                                     .background(
                                         when {
                                             hasEvent -> PrimaryRed
@@ -253,9 +255,10 @@ private fun CalendarWidget(modifier: Modifier = Modifier) {
                             ) {
                                 Text(
                                     d.toString(),
-                                    fontSize = 12.sp,
+                                    fontSize = 11.sp,
                                     color    = if (hasEvent) Color.White
-                                               else MaterialTheme.colorScheme.onSurface
+                                               else MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         } else {
@@ -438,10 +441,10 @@ private fun QuickActionsWidget(modifier: Modifier = Modifier, onNavigate: (Strin
         Text("Ações Rápidas", fontSize = 14.sp, fontWeight = FontWeight.Medium)
         Spacer(Modifier.height(8.dp))
         val actions = listOf(
-            Triple("Novo Evento",     Icons.Default.CalendarMonth, "events"),
-            Triple("Novo Orçamento",  Icons.Default.Calculate,     "budget"),
-            Triple("Ver Estoque",     Icons.Default.Inventory,     "stock"),
-            Triple("Relatórios",      Icons.Default.BarChart,      "reports"),
+            Triple("Novo Evento",     Icons.Default.CalendarMonth, Screen.EventForm.route),
+            Triple("Novo Orçamento",  Icons.Default.Calculate,     Screen.CreateBudget.route),
+            Triple("Ver Estoque",     Icons.Default.Inventory,     Screen.Stock.route),
+            Triple("Relatórios",      Icons.Default.BarChart,      Screen.Reports.route),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Column(
@@ -481,12 +484,19 @@ private fun QuickActionCard(
         elevation = CardDefaults.cardElevation(0.dp)
     ) {
         Row(
-            modifier          = Modifier.padding(14.dp),
+            modifier          = Modifier.padding(horizontal = 12.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(icon, null, tint = PrimaryRed, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.width(10.dp))
-            Text(label, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = label,
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f),
+                lineHeight = 14.sp
+            )
         }
     }
 }
